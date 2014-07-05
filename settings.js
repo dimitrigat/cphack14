@@ -10,19 +10,22 @@ module.exports = function (app, configurations, express, logger) {
     // load assets node from configuration file.
     var assets = nconf.get('assets') || {}
 
+    // get the environment, default to development
+    var env = process.env.NODE_ENV || 'development';
+
     // Development Configuration
-    app.configure('development', 'test', function(){
+    if ('development' == env || 'test' == env) {
         // register the request logger
         app.use(requestLogger.create(logger))
         app.set('DEBUG', true)
         app.use(express.errorHandler({ dumpExceptions: true, showStack: true }))
-    })
+    }
 
     // Production Configuration
-    app.configure('production', function(){
+    if ('production' == env) {
         app.set('DEBUG', false)
         app.use(express.errorHandler())
-    })
+    }
 
     // Cachify Asset Configuration
     app.use(cachify.setup(assets, {
@@ -31,18 +34,14 @@ module.exports = function (app, configurations, express, logger) {
     }))
 
     // Global Configuration
-    app.configure(function(){
+    app.set('views', __dirname + '/views')
+    app.set('view engine', 'jade')
+    app.set('view options', { layout: false })
+    app.use(express.bodyParser())
+    app.use(express.methodOverride())
+    app.use(express.static(__dirname + '/public'))
 
-        app.set('views', __dirname + '/views')
-        app.set('view engine', 'jade')
-        app.set('view options', { layout: false })
-        app.use(express.bodyParser())
-        app.use(express.methodOverride())
-        app.use(express.static(__dirname + '/public'))
-
-        app.use(app.router)
-
-    })
+    app.use(app.router)
 
     return app
 }
