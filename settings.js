@@ -4,6 +4,9 @@ module.exports = function (app, configurations, express, logger) {
         , cachify = require('connect-cachify')
         , winston = require('winston')
         , requestLogger = require('winston-request-logger')
+        , errorhandler = require('errorhandler')
+        , bodyParser = require('body-parser')
+        , methodOverride = require('method-override')
 
     nconf.argv().env().file({ file: 'local.json' })
 
@@ -18,7 +21,10 @@ module.exports = function (app, configurations, express, logger) {
         // register the request logger
         app.use(requestLogger.create(logger))
         app.set('DEBUG', true)
-        app.use(express.errorHandler({ dumpExceptions: true, showStack: true }))
+        //app.use(express.errorHandler({ dumpExceptions: true, showStack: true }))
+
+        // error handling middleware
+        app.use(errorhandler())
     }
 
     // Production Configuration
@@ -37,11 +43,12 @@ module.exports = function (app, configurations, express, logger) {
     app.set('views', __dirname + '/views')
     app.set('view engine', 'jade')
     app.set('view options', { layout: false })
-    app.use(express.bodyParser())
-    app.use(express.methodOverride())
+    app.use(bodyParser.urlencoded({
+        extended: true
+    }));
+    app.use(bodyParser.json())
+    app.use(methodOverride())
     app.use(express.static(__dirname + '/public'))
-
-    app.use(app.router)
 
     return app
 }
