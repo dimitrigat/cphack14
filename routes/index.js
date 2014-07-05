@@ -11,20 +11,30 @@ module.exports = function(app) {
         'project_key' : 'cphack'
     }});
 
-    client.products.all().fetch()
-        .then(function(result) {
-            var products = [];
-            //console.log("Results: %d", result.body.total);
-            for (var i = 0; i < result.body.results.length; i++) {
-                products.push(result.body.results[i].masterData.current);
-                console.log("%j", result.body.results[i].masterData.current);
-            }
+    // Home/main
+    app.get('/', function(req, res) {
+        client.products.all().fetch()
+            .then(function(result) {
+                var products = [];
+                //console.log("Results: %d", result.body.total);
+                for (var i = 0; i < result.body.results.length; i++) {
+                    products.push(result.body.results[i]);
+                    console.log("%j", result.body.results[i]);
+                }
 
-            // Home/main
-            app.get('/', function(req, res) {
                 res.render('index', { title: 'C+ Hackathlon shop', products: products })
             })
-        })
-        .fail(function(error) {console.log(error.message)});
+            .fail(function(error) {console.log(error.message)});
+    })
 
+    // product
+    app.get('/product/:id', function(req, res) {
+        client.products.where('id="' + req.params.id + '"').fetch()
+            .then(function(result) {
+                var product = result.body.results[0];
+
+                res.render('product', { product: product })
+            })
+            .fail(function(error) {console.log(error.message)});
+    })
 }

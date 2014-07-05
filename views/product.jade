@@ -1,0 +1,11 @@
+extends layout
+
+block content
+    .header.jumbotron.subhead
+        .container
+            .row
+                .col-md-12
+                    h1= product.masterData.current.name.en
+                    p.lead= product.masterData.current.description.en
+                    .container
+                        img(src=product.masterData.current.masterVariant.images[0].url, width="800", class="img-responsive")
