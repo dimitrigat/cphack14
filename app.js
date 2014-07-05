@@ -13,6 +13,9 @@ require('./settings')(app, configurations, express, logger)
 // merge nconf overrides with the configuration file.
 nconf.argv().env().file({ file: 'local.json' })
 
+// pass configuration values
+app.set('conf', nconf)
+
 // Routes
 require('./routes')(app)
 

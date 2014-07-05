@@ -6,9 +6,9 @@ module.exports = function(app) {
     SphereClient = require('sphere-node-client');
 
     var client = new SphereClient({config: {
-        'client_id' : 'JrwhqXpdIr1NJOBRIIfmW1dD',
-        'client_secret' : 'Dygrpv-Az7vrWxKwzOZq26isKZpW1wBF',
-        'project_key' : 'cphack'
+        'client_id' : app.get('conf').get('sphereio').client_id,
+        'client_secret' : app.get('conf').get('sphereio').client_secret,
+        'project_key' : app.get('conf').get('sphereio').project_key
     }});
 
     // Home/main
