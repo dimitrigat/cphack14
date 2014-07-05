@@ -3,5 +3,8 @@
     "main":[
         "./public/css/style.css",
         "./public/js/site.js"
-    ]
+    ],
+    "dependencies":{
+        "bootstrap":"3.2.0"
+    }
 }
