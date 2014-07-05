@@ -1,27 +1,24 @@
 extends layout
-
 block content
     .header.jumbotron.subhead
         .container
             .row
                 .col-md-12
                     h1 Hackathon shop
-                    p.lead Das wird voll gut!
-
+                    p.lead Search results
                     .container
                         h2 Search
                         form(role="form", action="/search", method="get")
                             input(type="text", class="form-control", name="q", placeholder="Search")
                             button(type="submit", class="btn btn-default") Submit
-
                     .container
                         h2 Products
                         mixin productList(products)
                             .row
                                 - each product in products
                                     .col-md-4
-                                       a(href="/product/"+product.id): h3= product.masterData.current.name.en
-                                       a(href="/product/"+product.id): img(src=product.masterData.current.masterVariant.images[0].url, width="100")
-                                       = (product.masterData.current.masterVariant.prices[0].value.centAmount / 100)
-                                       = product.masterData.current.masterVariant.prices[0].value.currencyCode
+                                        a(href="/product/"+product.id): h3= product.name.en
+                                        a(href="/product/"+product.id): img(src=product.masterVariant.images[0].url, width="100")
+                                        = (product.masterVariant.prices[0].value.centAmount / 100)
+                                        = product.masterVariant.prices[0].value.currencyCode
                         +productList(products)

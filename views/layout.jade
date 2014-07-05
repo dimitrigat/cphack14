@@ -11,11 +11,13 @@ html(lang='en')
                     span.icon-bar
                     span.icon-bar
                     span.icon-bar
-                a.brand cphack
+                a.brand: img(src="images/complus_logo_medium.png", alt="Commerce Plus")
                 .nav-collapse
-                ul.nav
-                    li.active
+                .container
+                    .col-md-1
                         a(href="/") Home
+                    each category in categories
+                        .col-md-1: a(href="/"+category.slug.en) #{category.name.de}
 
     .container
 

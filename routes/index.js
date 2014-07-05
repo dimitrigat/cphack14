@@ -1,8 +1,5 @@
 module.exports = function(app) {
 
-    //products
-    var products = [{name: 'Shirt', price: 12.99}, {name: 'Hose', price: 29.99}]
-
     SphereClient = require('sphere-node-client');
 
     var client = new SphereClient({config: {
@@ -13,16 +10,28 @@ module.exports = function(app) {
 
     // Home/main
     app.get('/', function(req, res) {
+        var products = [];
+        var categories = [];
+
         client.products.all().fetch()
             .then(function(result) {
-                var products = [];
-                //console.log("Results: %d", result.body.total);
+
                 for (var i = 0; i < result.body.results.length; i++) {
                     products.push(result.body.results[i]);
-                    console.log("%j", result.body.results[i]);
                 }
 
-                res.render('index', { title: 'C+ Hackathlon shop', products: products })
+                return client.categories.all().fetch();
+            })
+            .then(function (result) {
+                for (var i = 0; i < result.body.results.length; i++) {
+                    categories.push(result.body.results[i]);
+                }
+
+                res.render('index', {
+                    title: 'C+ Hackathlon shop',
+                    products: products,
+                    categories: categories
+                })
             })
             .fail(function(error) {console.log(error.message)});
     })
@@ -34,6 +43,25 @@ module.exports = function(app) {
                 var product = result.body.results[0];
 
                 res.render('product', { product: product })
+            })
+            .fail(function(error) {console.log(error.message)});
+    })
+
+    // search
+    app.get('/search', function(req, res) {
+        client.productProjections
+            .text(req.query.q)
+            .lang('de')
+            .search()
+            .then(function(result) {
+                var products = [];
+                //console.log("Results: %d", result.body.total);
+                for (var i = 0; i < result.body.results.length; i++) {
+                    products.push(result.body.results[i]);
+                    console.log("result: %j", result.body.results[i]);
+                }
+
+                res.render('search', { title: 'Search for ' + req.params.q, products: products })
             })
             .fail(function(error) {console.log(error.message)});
     })
