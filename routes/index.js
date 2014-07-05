@@ -38,30 +38,53 @@ module.exports = function(app) {
 
     // product
     app.get('/product/:id', function(req, res) {
+        var product;
+        var categories = [];
+
         client.products.where('id="' + req.params.id + '"').fetch()
             .then(function(result) {
-                var product = result.body.results[0];
+                product = result.body.results[0];
 
-                res.render('product', { product: product })
+                return client.categories.all().fetch();
+            })
+            .then(function (result) {
+                for (var i = 0; i < result.body.results.length; i++) {
+                    categories.push(result.body.results[i]);
+                }
+
+                res.render('product', { product: product, categories: categories })
             })
             .fail(function(error) {console.log(error.message)});
     })
 
     // search
     app.get('/search', function(req, res) {
+        var products = [];
+        var categories = [];
+
         client.productProjections
             .text(req.query.q)
             .lang('de')
             .search()
             .then(function(result) {
-                var products = [];
                 //console.log("Results: %d", result.body.total);
                 for (var i = 0; i < result.body.results.length; i++) {
                     products.push(result.body.results[i]);
                     console.log("result: %j", result.body.results[i]);
                 }
 
-                res.render('search', { title: 'Search for ' + req.params.q, products: products })
+                return client.categories.all().fetch();
+            })
+            .then(function (result) {
+                for (var i = 0; i < result.body.results.length; i++) {
+                    categories.push(result.body.results[i]);
+                }
+
+                res.render('search', {
+                    title: 'Search for ' + req.params.q,
+                    products: products,
+                    categories: categories
+                })
             })
             .fail(function(error) {console.log(error.message)});
     })
