@@ -2,7 +2,19 @@ extends layout
 
 block content
     .header.jumbotron.subhead
-        .row
-            .span6
-                h1 Hackathon shop
-                p.lead Das wird voll gut!
+        .container
+            .row
+                .span6
+                    h1 Hackathon shop
+                    p.lead Das wird voll gut!
+
+                    .container
+                        mixin productList(products)
+                            .row
+                                - each product in products
+                                    .col-xs-4
+                                       h2= product.name.en
+                                       img(src=product.masterVariant.images[0].url, width="100")
+                                       = (product.masterVariant.prices[0].value.centAmount / 100)
+                                       = product.masterVariant.prices[0].value.currencyCode
+                        +productList(products)
