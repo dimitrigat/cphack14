@@ -5,6 +5,6 @@
         "./public/js/site.js"
     ],
     "dependencies":{
-        "bootstrap":"~2.2.2"
+        "bootstrap":"3.2.0"
     }
 }
