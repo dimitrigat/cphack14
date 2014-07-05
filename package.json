@@ -53,7 +53,8 @@
     "directory": "*",
     "limit": "*",
     "multipart": "*",
-    "express-static-cache": "*"
+    "express-static-cache": "*",
+    "sphere-node-client": "0.7.x"
   },
   "devDependencies": {
     "grunt-simple-mocha": "~0.2.0",
